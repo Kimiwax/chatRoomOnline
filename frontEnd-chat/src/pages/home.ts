@@ -10,28 +10,28 @@ class Home extends HTMLElement{
         const roomIdInp = this.querySelector(".roomIdInp") as HTMLInputElement;
         const input = this.querySelector('input[type="email"]') as HTMLInputElement;
         const form = this.querySelector("form") as HTMLElement;
-
-        console.log(roomIdInp);
+        const inputEmail = this.querySelector(".form-email") as HTMLInputElement;
+        const inputName = this.querySelector(".form-name") as HTMLInputElement;
+      
         
         listRooms.addEventListener('change', ()=>{
             listRooms.value == "existingRoom" ? (roomId.style.display = "block", roomIdInp.disabled = false ): (roomId.style.display = "none", roomIdInp.disabled = true )
-            console.log(roomIdInp);
-        })
+          })
 
         form.addEventListener('submit',(e)=>{
             e.preventDefault();
-            console.log(input.value);
-            
+            if(listRooms.value == "newRoom"){
+              state.setEmailAndName(inputEmail.value, inputName.value)
+              //state.signUp();
+              state.signUp(err => {
+                if (err) console.log("Hubo un error en el signIn");
+                state.askNewRoom(() => {
+                  state.accesToRoom();
+                  Router.go("/chat");
+                });
+              });
+            }
         })
-
-       /* form.addEventListener("submit", (e) =>{
-            e.preventDefault();
-            const target = e.target as any;
-            console.log(target.nombre.value);
-
-            state.setName(target.nombre.value);
-            Router.go("/chat");
-        });*/
     }
     render(){
         const style = document.createElement("style");
@@ -43,12 +43,12 @@ class Home extends HTMLElement{
       <form>
         <div class="mb-3">
           <label for="personEmail" class="form-label fw-bold fs-5">Email</label>
-          <input type="email" class="form-control rounded-pill" id="personEmail" placeholder="Introduce tu email"
+          <input type="email" class="form-control rounded-pill form-email" id="personEmail" placeholder="Introduce tu email"
             required>
         </div>
         <div class="mb-3">
           <label for="personName" class="form-label fw-bold fs-5">Nombre</label>
-          <input type="text" class="form-control rounded-pill" id="personName" placeholder="Introduce tu nombre"
+          <input type="text" class="form-control rounded-pill form-name" id="personName" placeholder="Introduce tu nombre"
             required>
         </div>
         <div class="mb-3">
@@ -71,7 +71,6 @@ class Home extends HTMLElement{
     </section>
   </main>
         `;
-
         style.innerHTML = `
         *{
             background-color:#1D2033;

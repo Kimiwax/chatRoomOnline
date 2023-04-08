@@ -63,6 +63,30 @@ const state = {
       callback(true);
     }
   },
+  signUp(callback){
+    const cs = this.getState();
+    if (cs.email) {
+      fetch(API_BASE_URL + "/signup", {
+        method: "post",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ email: cs.email, nombre: cs.fullName }),
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          cs.userId = data.id;
+          console.log(data);
+          this.setState(cs);
+          callback();
+        });
+    } else {
+      console.error("No hay un email en el state");
+      callback(true);
+    }
+  },
   askNewRoom(callback?) {
     const cs = this.getState();
     if (cs.userId) {

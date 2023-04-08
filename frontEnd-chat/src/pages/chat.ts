@@ -11,6 +11,8 @@ type Message = {
 class ChatPage extends HTMLElement {
     connectedCallback() {
         state.subscribe(() => {
+            console.log("hola");
+            
             const currentState = state.getState();
             this.messages = currentState.messages;
             this.roomId = currentState.roomId;

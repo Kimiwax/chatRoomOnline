@@ -52,7 +52,7 @@ app.post("/auth", (req, res) => {
     .then(searchResponse => {
       if (searchResponse.empty) {
         res.status(404).json({
-          message: "Not Found",
+          message: "Not Founds",
         });
       } else {
         res.json({
