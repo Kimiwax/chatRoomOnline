@@ -4,7 +4,7 @@ import {state} from "../state";
 
 type Message = {
     from: string;
-    message: string;
+    messages: string;
 };
 
 
@@ -29,8 +29,8 @@ class ChatPage extends HTMLElement {
         form ?. addEventListener("submit", (e) => {
             e.preventDefault();
             const target = e.target as any;
-            state.pushMessage(target["new-message"].value);
-
+            const message = target["new-message"].value
+            state.pushMessage(message);
         });
     }
     scrollToBottom() {
@@ -49,7 +49,7 @@ class ChatPage extends HTMLElement {
             <h4>Room ID:"${this.roomId}"</h4>
             <div class="container-fluid">
                 <div class="container-window">
-                    <div class="messages d-flex flex-column justify-content-end align-items-end mb-3">
+                    <div class="messages d-flex flex-column align-items-end mb-3">
                     ${
             this.messages.map((m) => {
                 return `
@@ -60,7 +60,7 @@ class ChatPage extends HTMLElement {
                     m.from
                 }:</div>
                             <div class="message_p">${
-                    m.message
+                    m.messages
                 }</div>
                         </div>
                         `
@@ -85,9 +85,10 @@ class ChatPage extends HTMLElement {
         }
         .messages{
             height: 500px;
-            overflow-y: auto;
             border:solid 1px #343647;
             padding: 1rem;
+            overflow-y: scroll;
+            position:relative
         }
 
         .message{
@@ -108,6 +109,7 @@ class ChatPage extends HTMLElement {
 
         .container-messages.container-received{
             border: solid 1px red;
+            align-self: flex-start;
         }
 
         .container-messages{
@@ -129,20 +131,19 @@ class ChatPage extends HTMLElement {
 
         const currentState = state.getState();
         const msg = this.querySelectorAll(".message");
-
-        const currentUser = currentState.nombre;
-        console.log("hola soy el chupapijas", msg);
-
-        msg.forEach((m) => {
+        const containerMsg = this.querySelectorAll(".container-messages");
+        const currentUser = currentState.fullName;
+        console.log(currentUser);
+        
+        msg.forEach((m, index) => {
             const who = m.getAttribute("mFrom");
-
 
             if (who == currentUser) {
                 m.classList.add("msg-sent")
-                this.querySelector(".container-messages") ?. classList.add("container-sent");
+                containerMsg[index].classList.add("container-sent");
             } else if (who !== currentUser) {
                 m.classList.add("msg-received")
-                this.querySelector(".container-messages") ?. classList.add("container-received");
+                containerMsg[index].classList.add("container-received");
             }
         })
 

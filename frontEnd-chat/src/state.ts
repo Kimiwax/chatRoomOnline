@@ -35,7 +35,11 @@ const state = {
     currentState.email = email;
     this.setState(currentState);
   },
-
+  setRoomId(roomId:string){
+    const currentState = this.getState();
+    currentState.roomId = roomId;
+    this.setState(currentState);
+  },
   getState() {
     return this.data;
   },
@@ -135,7 +139,10 @@ const state = {
     this.setState(currentState);
   },
   pushMessage(message: string) {
-    const nombreDelState = this.data.nombre;
+    const nombreDelState = this.data.fullName;
+    const roomIDlargo = this.data.rtbRoomId;
+    console.log(nombreDelState,message, roomIDlargo );
+    
     fetch(API_BASE_URL + "/messages", {
       method: "post",
       headers: {
@@ -143,7 +150,8 @@ const state = {
       },
       body: JSON.stringify({
         from: nombreDelState,
-        message: message,
+        messages: message,
+        roomId: roomIDlargo
       }),
     });
   },

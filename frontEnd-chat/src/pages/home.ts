@@ -23,12 +23,21 @@ class Home extends HTMLElement{
             if(listRooms.value == "newRoom"){
               state.setEmailAndName(inputEmail.value, inputName.value)
               //state.signUp();
-              state.signUp(err => {
+              state.signIn(err => {
                 if (err) console.log("Hubo un error en el signIn");
                 state.askNewRoom(() => {
                   state.accesToRoom();
                   Router.go("/chat");
                 });
+              });
+            }
+            else if(listRooms.value == "existingRoom"){
+              state.setEmailAndName(inputEmail.value, inputName.value)
+              state.setRoomId(roomIdInp.value);
+              state.signIn(err => {
+                if (err) console.log("Hubo un error en el signIn");
+                  state.accesToRoom();
+                  Router.go("/chat");
               });
             }
         })

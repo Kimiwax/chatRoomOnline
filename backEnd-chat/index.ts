@@ -123,6 +123,19 @@ app.get("/room/:roomId", (req, res) => {
     });
 });
 
+app.post("/messages", (req, res)=>{
+  const roomId = req.body.roomId;
+  const chatRoom = rtdb.ref("rooms/" + roomId + "/messages");
+
+  const message = {from: req.body.from, messages: req.body.messages};
+
+  chatRoom.push(message, ()=>{
+    res.json("Mensajes agregados correctamente");
+    console.log(req.body);
+    
+  })
+})
+
 app.get("/", (req, res) => {
   res.send("el GET esta funcionando");
 });
