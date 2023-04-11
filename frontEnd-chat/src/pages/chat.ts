@@ -12,7 +12,7 @@ class ChatPage extends HTMLElement {
     connectedCallback() {
         state.subscribe(() => {
             console.log("hola");
-            
+
             const currentState = state.getState();
             this.messages = currentState.messages;
             this.roomId = currentState.roomId;
@@ -23,7 +23,7 @@ class ChatPage extends HTMLElement {
     }
     messages : Message[] = [];
     roomId : number;
-    
+
     addListeners() {
         const form = this.querySelector(".submit-message");
         form ?. addEventListener("submit", (e) => {
@@ -46,7 +46,9 @@ class ChatPage extends HTMLElement {
         <main class="container-fluid d-flex flex-column align-items-center pb-5 mainForm w-100">
         <section class="mainForm-section mb-5 col-12 col-sm-6 col-xxl-5">
             <h1 class="text-center">Kimi Chat</h1>
-            <h4>Room ID:"${this.roomId}"</h4>
+            <h4>Room ID:"${
+            this.roomId
+        }"</h4>
             <div class="container-fluid">
                 <div class="container-window">
                     <div class="messages d-flex flex-column align-items-end mb-3">
@@ -134,7 +136,7 @@ class ChatPage extends HTMLElement {
         const containerMsg = this.querySelectorAll(".container-messages");
         const currentUser = currentState.fullName;
         console.log(currentUser);
-        
+
         msg.forEach((m, index) => {
             const who = m.getAttribute("mFrom");
 

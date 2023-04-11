@@ -1,48 +1,63 @@
 import {Router} from "@vaadin/router";
 import {state} from "../state";
 
-class Home extends HTMLElement{
-    connectedCallback(){
+class Home extends HTMLElement {
+    connectedCallback() {
         this.render()
 
-        const listRooms = this.querySelector(".form-select") as HTMLInputElement;
-        const roomId = this.querySelector(".roomIdDiv") as HTMLInputElement;
-        const roomIdInp = this.querySelector(".roomIdInp") as HTMLInputElement;
-        const input = this.querySelector('input[type="email"]') as HTMLInputElement;
-        const form = this.querySelector("form") as HTMLElement;
-        const inputEmail = this.querySelector(".form-email") as HTMLInputElement;
-        const inputName = this.querySelector(".form-name") as HTMLInputElement;
-      
-        
-        listRooms.addEventListener('change', ()=>{
-            listRooms.value == "existingRoom" ? (roomId.style.display = "block", roomIdInp.disabled = false ): (roomId.style.display = "none", roomIdInp.disabled = true )
-          })
+        const listRooms = this.querySelector(".form-select")as HTMLInputElement;
+        const roomId = this.querySelector(".roomIdDiv")as HTMLInputElement;
+        const roomIdInp = this.querySelector(".roomIdInp")as HTMLInputElement;
+        const input = this.querySelector('input[type="email"]')as HTMLInputElement;
+        const form = this.querySelector("form")as HTMLElement;
+        const inputEmail = this.querySelector(".form-email")as HTMLInputElement;
+        const inputName = this.querySelector(".form-name")as HTMLInputElement;
 
-        form.addEventListener('submit',(e)=>{
+
+        listRooms.addEventListener('change', () => {
+            listRooms.value == "existingRoom" ? (roomId.style.display = "block", roomIdInp.disabled = false) : (roomId.style.display = "none", roomIdInp.disabled = true)
+        })
+
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-            if(listRooms.value == "newRoom"){
-              state.setEmailAndName(inputEmail.value, inputName.value)
-              //state.signUp();
-              state.signIn(err => {
-                if (err) console.log("Hubo un error en el signIn");
-                state.askNewRoom(() => {
-                  state.accesToRoom();
-                  Router.go("/chat");
+            if (listRooms.value == "newRoom") {
+                state.setEmailAndName(inputEmail.value, inputName.value)
+                state.signIn(() => {
+                    const currentState = state.getState();
+                    if (currentState.userId) {
+                        state.askNewRoom(() => {
+                            state.accesToRoom();
+                            Router.go("/chat");
+                        });
+                    } else {
+                        state.signUp(() => {
+                            state.askNewRoom(() => {
+                                state.accesToRoom();
+                                Router.go("/chat");
+                            });
+                        })
+                    }
                 });
-              });
-            }
-            else if(listRooms.value == "existingRoom"){
-              state.setEmailAndName(inputEmail.value, inputName.value)
-              state.setRoomId(roomIdInp.value);
-              state.signIn(err => {
-                if (err) console.log("Hubo un error en el signIn");
-                  state.accesToRoom();
-                  Router.go("/chat");
-              });
+            } else if (listRooms.value == "existingRoom") {
+                state.setEmailAndName(inputEmail.value, inputName.value)
+                state.setRoomId(roomIdInp.value);
+
+                state.signIn(() => {
+                    const currentState = state.getState();
+                    if (currentState.userId) {
+                        state.accesToRoom();
+                        Router.go("/chat");
+                    } else {
+                        state.signUp(() => {
+                            state.accesToRoom();
+                            Router.go("/chat")
+                        })
+                    }
+                });
             }
         })
     }
-    render(){
+    render() {
         const style = document.createElement("style");
         this.innerHTML = `
         <main class="container-fluid d-flex flex-column align-items-center pb-5 mainForm w-100">
